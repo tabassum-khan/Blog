@@ -1,0 +1,240 @@
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  font-family: sans-serif;
+  background: url('../img/bg-01.jpg') no-repeat fixed;
+  background-size: cover;
+}
+
+.box {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 400px;
+  height: auto;
+  padding: 40px;
+  transform: translate(-50%, -50%);
+  -ms-transform: translate(-50%, -50%);
+  background: rgb(0, 0, 0, 0.88);
+  box-shadow: 10px 15px 25px rgba(0, 0, 0, 0.85);
+  border-radius: 10px;
+}
+
+.login-tab {
+  position: relative;
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+.login-tab .col {
+  position: relative;
+  top: -10px;
+  margin: 10px;
+  color: #59B4B4;
+  cursor: pointer;
+  padding: 7px;
+  padding-top: 10px;
+}
+
+.box .form-group {
+  position: relative;
+}
+
+.box .form-group input {
+  width: 100%;
+  padding: 10px 0;
+  font-size: 15px;
+  padding-left: 15px;
+  padding-top: 15px;
+  color: #ccc;
+  margin-bottom: 30px;
+  border: none;
+  border-bottom: 1px solid #03a9f4;
+  background: transparent;
+}
+
+.form-group.success input{
+  border-color: #2ecc71;
+}
+
+.form-group.error input{
+  border-color: #e74e3c;
+}
+
+.box .form-group input:focus {
+  outline: none;
+}
+
+.box .form-group input:-webkit-autofill,
+.box .form-group input:-webkit-autofill:hover,
+.box .form-group input:-webkit-autofill:focus {
+  border: none;
+  border-bottom: 1px solid #03a9f4;
+  -webkit-text-fill-color: #ccc;
+  transition: background-color 5000s ease-in-out 0s;
+}
+
+.box .form-group label {
+  position: absolute;
+  top: 0;
+  left: 0;
+  padding: 10px 10px;
+  font-size: 14px;
+  color: #ccc;
+  pointer-events: none;
+  transition: 0.5s;
+}
+
+.box .form-group input:focus~label,
+.box .form-group input:valid~label {
+  top: -20px;
+  left: 0;
+  color: #03a9f4;
+  font-size: 12px;
+}
+
+.fa-check-circle{
+  position: absolute;
+  top: 20px;
+  right: 5px; 
+  display: none;
+}
+
+.form-group.success i.fa-check-circle{
+  display: inline-block;
+  color: #2ecc71;
+}
+
+.fa-exclamation-circle{
+  position: absolute;
+  top: 20px;
+  right: 5px; 
+  display: none;
+}
+
+.form-group.error i.fa-exclamation-circle{
+  display: inline-block;
+  color: #e74e3c;
+}
+
+.error-message{
+  position: relative;
+  top: -30px;
+  display: none;
+}
+
+.form-group.error .error-message{
+  display: inline-block;
+  color: #e74e3c;
+}
+
+.remember-forgot-tab {
+  margin-top: -10px;
+  margin-bottom: 30px;
+  line-height: 16px;
+}
+
+.checkbox label {
+  float: left;
+}
+
+.forgot-pass label {
+  float: right;
+}
+
+.remember-forgot-tab .checkbox label,
+.remember-forgot-tab .forgot-pass a {
+  text-decoration: none;
+  color: #59B4B4;
+  font-size: 13px;
+  cursor: pointer;
+}
+
+.remember-forgot-tab label:hover,
+.remember-forgot-tab a:hover {
+  color: #ccc;
+}
+
+.remember-forgot-tab .checkbox input {
+  position: absolute;
+  line-height: 16px;
+  height: 14px;
+  width: 14px;
+}
+
+.remember-forgot-tab .checkbox span {
+  margin-left: 22px;
+}
+
+.box .form-group .toggle-password {
+  position: absolute;
+  top: 20px;
+  right: 10px;
+  cursor: pointer;
+  opacity: 0.85;
+  color: #ccc;
+}
+
+
+/**************** Designing Success Card  **************************/
+
+.success-register .card {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 320px;
+  display: block;
+  text-align: center;
+  font-family: 'Source Sans Pro', sans-serif;
+  transform: translate(-50%, -50%);
+  -ms-transform: translate(-50%, -50%);
+  box-shadow: 10px 15px 25px rgba(0, 0, 0, 0.85);
+  opacity: 0.95; 
+}
+
+.header {
+  padding: 2em;
+  background-color: #8BC34A;
+  display: block;
+  color: #fff;
+  border-top-right-radius: 8px;
+  border-top-left-radius: 8px;
+}
+
+#checkmark {
+  font-weight: lighter;
+  fill: #fff;
+  margin: -3.5em auto 10px auto;
+}
+
+#status {
+  font-weight: lighter;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  font-size: 1em;
+  margin-top: -.2em;
+  margin-bottom: 0;
+} 
+
+.card-body{
+  padding: 2em 2em 3em 2em;
+  background: #fff;
+  display: block;
+  border-bottom-right-radius: 8px;
+  border-bottom-left-radius: 8px;
+}
+
+#message {
+  margin-top: -.5em;
+  color: #757575;
+  letter-spacing: 1px;
+}
+
+#continue-button{
+  position:relative;
+  top: 1rem;
+}
