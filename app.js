@@ -20,9 +20,9 @@ app
 blogController(app);
 
 
-//connect to the database and then connect to the server
+/***    URL to your database    ***/
 dbURI = "mongodb://localhost:27017/testDB";
-
+    
 mongoose.connect(dbURI, { useNewUrlParser: true , useUnifiedTopology: true})
 .then(() => app.listen(3000, function() {
     console.log("Server started on port 3000");
