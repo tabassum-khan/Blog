@@ -1,5 +1,6 @@
 const express = require("express");
 const router = express.Router();
+const md5 = require("md5");
 
 //import userModel
 const User = require("../models/userModel.js");
@@ -11,7 +12,30 @@ const User = require("../models/userModel.js");
 
 //Login
     router.post("/login", function(req, res){
-        res.redirect("/home");
+
+        const username = req.body.login_username;
+        const pass = md5(req.body.login_pass);
+
+        User.find({username: username}, function(err, result){
+           if(!err){
+                console.log(result);
+                if(result.length === 0){
+                    res.send("User doesnt exist");
+                }
+                else{
+                    if(result[0].password === pass){
+                        console.log("Password matched");
+                        res.redirect("/home");
+                    }
+                    else{
+                        res.send("Password doesnt match")
+                    }
+                }
+
+           } else{
+               console.log(err);
+           }
+        });
     });
 
 //REGISTER THE USER USING SIGNUP FORM DATA
@@ -22,20 +46,18 @@ const User = require("../models/userModel.js");
 
        const user = new User({
             username: username,
-            password: pass
+            password: md5(pass)
        });
 
        if(pass === confirmPass){
             user.save()
             .then( (result) => {
-                console.log(result);
+                console.log(result + 'added to the database');
+                res.send(`Congratulations, you have been successfully registered with the username: ${username}`);
             })
             .catch( (err) =>{
                 console.log(err);
             });
-
-            console.log(`${username} added to the database`);
-            res.send(`Congratulations, you have been successfully registered with the username: ${username}`);
        }
     });
 

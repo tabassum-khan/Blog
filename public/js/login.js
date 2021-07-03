@@ -192,29 +192,29 @@ $(document).ready(function() {
   
 // });
 
-$("#login-form").keyup(function(e){
-  console.log("Clicked on form");
-})
+// $("#login-form").keyup(function(e){
+//   console.log("Clicked on form");
+// })
 
-$("#login-form").submit(function(e){
+// $("#login-form").submit(function(e){
  
-  if (isLoginEMailValid && isLoginPassValid){
-    console.log("Login form Success");
-  }
-  else{
-    e.preventDefault();
-    console.log("Login Form Failed");
+//   if (isLoginEMailValid && isLoginPassValid){
+//     console.log("Login form Success");
+//   }
+//   else{
+//     e.preventDefault();
+//     console.log("Login Form Failed");
 
-    const form = $(e.target);
-    const username = form.find("#login-username");
-    const pass = form.find("#login-pass");
+//     const form = $(e.target);
+//     const username = form.find("#login-username");
+//     const pass = form.find("#login-pass");
 
-    if (username.val().trim() === "")
-      isLoginEmailValid = setError( username, username.parent() , "Email ID is required.") ;
-    if (pass.val().trim() === "")
-      isLoginPassValid = setError( pass, pass.parent() , "Password is required.") ;
-  }
-});
+//     if (username.val().trim() === "")
+//       isLoginEmailValid = setError( username, username.parent() , "Email ID is required.") ;
+//     if (pass.val().trim() === "")
+//       isLoginPassValid = setError( pass, pass.parent() , "Password is required.") ;
+//   }
+// });
 
 
 /************************************   Signup Client Side FORM VALIDATION   **************************************/
@@ -226,7 +226,7 @@ $("#login-form").submit(function(e){
   ////////////////  VALIDATE EMAIL
   let validateEmail = function(){
 
-    $("#signup-username").on("keyup", function(e){
+    $("#signup-username").on("keyup focus", function(e){
 
       const value = $(e.target).val().trim();
       const regex = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
@@ -271,7 +271,7 @@ $("#login-form").submit(function(e){
 
   ////////////////  VALIDATE PASSWORD
   let validatePass = function(){
-    $("#signup-pass").keyup(function(e){
+    $("#signup-pass").on("keyup focus", function(e){
 
       const value = $(e.target).val().trim();
       const regex = /^(?=.*[0-9])(?=.*[!@#$%^&*])[a-zA-Z0-9!@#$%^&*_-]{8,16}$/;
@@ -297,7 +297,7 @@ $("#login-form").submit(function(e){
 
   ////////////////  VALIDATE CONFIRM PASSWORD
   let validateConfirmPass = function(){
-    $("#confirm-pass").keyup(function(e){
+    $("#confirm-pass").on("keyup focus", function(e){
 
       const passValue = $("#signup-pass").val().trim();
       const value = $("#confirm-pass").val().trim();
