@@ -224,8 +224,6 @@ $(document).ready(function() {
   let isConfirmPassValid = false;
 
   ////////////////  VALIDATE EMAIL
-  let validateEmail = function(){
-
     $("#signup-username").on("keyup focus", function(e){
 
       const value = $(e.target).val().trim();
@@ -267,10 +265,8 @@ $(document).ready(function() {
       } 
 
     });
-  }
 
   ////////////////  VALIDATE PASSWORD
-  let validatePass = function(){
     $("#signup-pass").on("keyup focus", function(e){
 
       const value = $(e.target).val().trim();
@@ -288,18 +284,15 @@ $(document).ready(function() {
       else if( !regex.test(String(value)) ){
         isPassValid = setError(  $(e.target), $(e.target).parent() , "Your password must contain atleast one uppercase letter, one lowercase letter, one special character (!,@,#,$,%,^,&,*,(,),_,-,+,=) and a number.") ;
       }
-      else 
+      else{ 
         isPassValid = setSuccess( $(e.target).parent() );
+        matchPassword();
+      }
     });
-
-  }
 
 
   ////////////////  VALIDATE CONFIRM PASSWORD
-  let validateConfirmPass = function(){
     $("#confirm-pass").on("keyup focus", function(e){
-
-      const passValue = $("#signup-pass").val().trim();
       const value = $("#confirm-pass").val().trim();
 
       //if confirm password is empty
@@ -307,14 +300,21 @@ $(document).ready(function() {
         isConfirmPassValid = setError( $(e.target), $(e.target).parent() , "Please confirm your password.");
       }
       //if password doesnt match with the confirm password
-      else if(value !== passValue){    
-        isConfirmPassValid = setError( $(e.target), $(e.target).parent() , "Passwords do not match.");
-      }
-      else{
-        isConfirmPassValid = setSuccess( $(e.target).parent() );
-      }
+      else 
+        matchPassword();
     });
-  }
+
+// function to match the password
+    function matchPassword(){
+      const passValue = $("#signup-pass").val().trim();
+      const confirmPassValue = $("#confirm-pass").val().trim();
+
+      if(confirmPassValue !== "" && confirmPassValue !== passValue)
+          isConfirmPassValid = setError( $("#confirm-pass"), $("#confirm-pass").parent() , "Passwords do not match.");
+
+      if(confirmPassValue !== "" && confirmPassValue === passValue)
+        isConfirmPassValid = setSuccess( $("#confirm-pass").parent() );
+    }
 
 
   //Add Error class to the form-group
@@ -341,10 +341,6 @@ $(document).ready(function() {
   /*************VALIDATING SIGNUP FORM******************** */
 
   function validateSignUpForm(){
-
-    validateEmail();
-    validatePass();
-    validateConfirmPass();
 
     $("#signup-form").submit(function(e){
 
