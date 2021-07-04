@@ -1,19 +1,29 @@
 const Blog = require("../models/blogModel.js");
 const User = require("./user.js");
 
+//import usercontroller.js
+const userController = require("./userController");
+
 const months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
 const days = ["Sun", "Mon", "Tue", "Wed", "Thurs", "Fri", "Sat"];
 
 module.exports = function(app){
+
+    app.all("*", function(req, res, next){
+        if( userController.getUserAuthentication() )
+            next();
+        else
+            res.redirect("/");  
+    });
+
+    /***********    All GET ROUTES  *****************/
     
     //HOME ROUTE
     app.get("/home", function(req, res){
-        
-        //fetch all the posts from the databse
         Blog.find().sort({createdAt: -1})
         .then( (result) => {
             res.render("home", {
-                user: User.user,
+                user:User.user,
                 startingContent: User.userInfo,
                 posts: result
             });
@@ -30,6 +40,53 @@ module.exports = function(app){
         });
     });
 
+    //Fetch the required post based on :_id from the databse
+    app.get("/posts/:postId", function(req, res){
+        const requestedPostId = req.params.postId;
+
+        Blog.find({_id: requestedPostId}, function(err, post){
+            if(!err){
+                res.render("post", {post: post[0]});
+            }else{
+                console.log(err);
+            }
+        });
+    });
+
+    //Edit the items in the database based on their ids
+    app.get("/edit/:postId", function(req, res){
+        const requestedPostId = req.params.postId;
+
+        Blog.find({_id: requestedPostId}, function(err, post){
+            if(!err){
+                res.render("compose", {
+                    id: post[0]._id,
+                    title: post[0].title,
+                    content: post[0].content
+                });
+            }else{
+                console.log(err);
+            }
+        });
+    });
+
+    //Delete from the database
+    app.get("/delete/:postId", function(req, res){
+        const requestedPostId = req.params.postId;
+
+        Blog.findByIdAndDelete(requestedPostId, function(err, post){
+            if(!err){
+                console.log(post);
+                console.log("The post has been successfully deleted! ");
+                res.json({post: post});
+            }   
+            else{
+                console.log(err);
+            }
+        });
+    });
+
+    /***********    All POST ROUTES  *****************/
 
     //CREATE POSTS IN DATABSE
     app.post("/compose", function(req, res){
@@ -55,53 +112,6 @@ module.exports = function(app){
 
     });
 
-    //Fetch the required post based on :_id from the databse
-    app.get("/posts/:postId", function(req, res){
-        const requestedPostId = req.params.postId;
-
-        Blog.find({_id: requestedPostId}, function(err, post){
-            if(!err){
-                res.render("post", {post: post[0]});
-            }else{
-                console.log(err);
-            }
-        });
-    });
-
-
-    //Edit the items in the database based on their ids
-    app.get("/edit/:postId", function(req, res){
-        const requestedPostId = req.params.postId;
-
-        Blog.find({_id: requestedPostId}, function(err, post){
-            if(!err){
-                res.render("compose", {
-                    id: post[0]._id,
-                    title: post[0].title,
-                    content: post[0].content
-                });
-            }else{
-                console.log(err);
-            }
-        });
-    });
-
-
-    //Delete from the database
-    app.get("/delete/:postId", function(req, res){
-        const requestedPostId = req.params.postId;
-
-        Blog.findByIdAndDelete(requestedPostId, function(err, post){
-            if(!err){
-                console.log(post);
-                console.log("The post has been successfully deleted! ");
-                res.json({post: post});
-            }   
-            else{
-                console.log(err);
-            }
-        });
-    });
 }
 
 

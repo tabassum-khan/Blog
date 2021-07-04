@@ -7,6 +7,13 @@ const passRegex = /^(?=.*[0-9])(?=.*[!@#$%^&*])[a-zA-Z0-9!@#$%^&*_-]{8,16}$/;
 const userSchema = new Schema({
     username : {
         type: String, 
+        required: [true, "Username is required"],
+        max: 20,
+        trim: true
+    }, 
+
+    email : {
+        type: String, 
         required: [true, "Email ID is required"],
         trim: true,
         lowercase: true,

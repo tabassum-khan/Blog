@@ -42,10 +42,10 @@
 
     <!--LOGIN -->
     <div id="login-box">
-      <form id="login-form" name="loginForm" action="/login" method="POST" novalidate>
+      <form id="login-form" name="loginForm" novalidate>
         <div class="form-group ">
-          <input type="text" id="login-username" name ="login_username" required />
-          <label for="login-username"> Email Id </label>
+          <input type="text" id="login-email" name ="login_email" required />
+          <label for="login-email"> Email Id </label>
           <i class="fas fa-check-circle"></i>
           <i class="fas fa-exclamation-circle"></i>
           <small class="error-message" aria-live="polite">Error Message</small>
@@ -72,10 +72,17 @@
 
     <!-- SIGNUP -->
     <div id="signup-box">
-      <form id="signup-form" name="signupForm" action="/register" method="post" novalidate>
+      <form id="signup-form" name="signupForm" novalidate>
         <div class="form-group">
-          <input type="text" id="signup-username" name="signup_username" required />
-          <label for="username"> Email Id </label>
+          <input type="text" id="username" name="username" required />
+          <label for="username"> Username </label>
+          <i class="fas fa-check-circle"></i>
+          <i class="fas fa-exclamation-circle"></i>
+          <small class="error-message" aria-live="polite">Error Message</small>
+        </div>
+        <div class="form-group">
+          <input type="text" id="signup-email" name="signup_email" required />
+          <label for="signup-email"> Email Id </label>
           <i class="fas fa-check-circle"></i>
           <i class="fas fa-exclamation-circle"></i>
           <small class="error-message" aria-live="polite">Error Message</small>
@@ -130,7 +137,6 @@
     </div>
     
   </div> <!--end success-register-->
-
   <script src="js/login.js"></script>
 </body>
 

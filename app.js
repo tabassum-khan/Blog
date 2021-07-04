@@ -14,11 +14,10 @@ app
 .set('view engine', 'ejs') //set the path to ejs files
 .use(express.static("public")) //static files - css and js and bodyparser for parsing req.body
 .use(express.urlencoded({ extended: false })) // to parse the req.body
-.use(userController); // User Controller --> demonstrating through express.router()
+.use(userController.router); // User Controller --> demonstrating through express.router()
 
 //call the controller - controls the get post request
 blogController(app);
-
 
 /***    URL to your database    ***/
 dbURI = "mongodb://localhost:27017/testDB";

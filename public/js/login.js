@@ -115,116 +115,130 @@ $(document).ready(function() {
 
 
 /************************************   Login FORM VALIDATION   **************************************/
-// let isLoginEMailValid = false;
-// let isLoginPassValid = false;
+let isLoginEMailValid = false;
+let isLoginPassValid = false;
 
-//When user is pressing the keys, check for input
-// $("#login-username").on("keyup blur", function(e){
-//   const value = $(e.target).val().trim();
+// Check if user exists on blur
+$("#login-email").on("keyup blur", function(e){
+  const value = $(e.target).val().trim();
 
-//   if(value === ""){
-//     isLoginEMailValid = setError( $(e.target), $(e.target).parent() , "Email ID is required.") ;
-//   }
-//   else if (e.type==="blur"){
-//     //check if user exists in the database
-//     $.ajax({
-//       type: "POST", 
-//       url: "/userExists/" + value,
-      
-//       success: function(result){
-//         if(result === "not_found")
-//           isLoginEMailValid = setError( $(e.target), $(e.target).parent() , "User does not exist.") ;
-//         else
-//           isLoginEMailValid = setSuccess( $(e.target).parent() );
-//       },
-      
-//       error: function(err){
-//         console.log(err);
-//       }
-//     });
+  if(value === "" || value === undefined)
+    isLoginEMailValid = setError($(e.target), $(e.target).parent(), "Email ID is required.");
+  else if(e.type === "blur"){
+    $.ajax({
+      type: "POST", 
+      url: "/login/" + value,
 
-//   }
-//   else{
-//     $(e.target).parent().removeClass("error");
-//   }
-// });
+      success: function(result){
+        if(result)
+          isLoginEMailValid = setSuccess($(e.target).parent());
+        else
+          isLoginEMailValid = setError($(e.target), $(e.target).parent(), "User does not exist.");
+      },
 
-// $("#login-pass").on("keyup blur", function(e){
-//   const value = $(e.target).val().trim();
+      error: function(error){
+        console.log(error);
+      }
 
-//   if(value === ""){
-//     isLoginPassValid = setError( $(e.target), $(e.target).parent() , "Password is required.") ;
-//   }
-//   //check if user exists in the database
-//   else if(e.type === "blur"){
-//     if(isLoginEMailValid){
-      
-//           $.ajax({
-//             type: "POST", 
-//             url: "/passwordExists",
-//             data: {
-//               username: $("#login-username").val().trim(),
-//               pass: $("#login-pass").val().trim(),
-//             },
-      
-//             success: function(result){
-//               // console.log(result);
-//               if(result.message === "nouser")
-//                 isLoginEMailValid = setError( $("#login-username"), $("#login-username").parent() ,  "User does not exist.") ;
-//               else if(result.message === "nopass")
-//                 isLoginPassValid = setError( $(e.target), $(e.target).parent() ,  "Password does not match with the username.") ;
-//               else{
-//                 isLoginPassValid = setSuccess( $(e.target).parent() );
-//               }
-//             },
-      
-//             error: function(error){
-//               console.log(error);
-//             }
-      
-//           });
-//     }
-//   }
-//   else{
-//     $(e.target).parent().removeClass("error");
-//     $(e.target).parent().find(".toggle-password").css("right", "10px");
-//   }
+    });
+  }
+  else{
+    $(e.target).parent().removeClass("error");
+  }
+
+});
+
+$("#login-pass").on("keyup", function(e){
+  const value = $(e.target).val().trim();
+
+  if(value === "" || value === undefined)
+    isLoginPassValid = setError($(e.target), $(e.target).parent(), "Password is required.");
+  else{
+    isLoginPassValid = true;
+    $(e.target).parent().removeClass("error");
+    $(e.target).parent().find(".toggle-password").css("right", "10px");
+  }
+
+});
+
+$("#login-form").submit(function(e){
+
+  e.preventDefault();
+  const form = $(e.target);
+  const email = form.find("#login-email");
+  const pass = form.find("#login-pass");
+
+  if (isLoginEMailValid && isLoginPassValid){
+    console.log("Login form Success");
   
-// });
+    $.ajax({
+      type: "POST", 
+      data: {
+        email: email.val().trim(),
+        pass: pass.val().trim()
+      },
+      url: "/login",
 
-// $("#login-form").keyup(function(e){
-//   console.log("Clicked on form");
-// })
+      success: function(result){
 
-// $("#login-form").submit(function(e){
- 
-//   if (isLoginEMailValid && isLoginPassValid){
-//     console.log("Login form Success");
-//   }
-//   else{
-//     e.preventDefault();
-//     console.log("Login Form Failed");
+        if(!result.user)
+          isLoginEMailValid = setError(email, email.parent(), "User does not exist.");
 
-//     const form = $(e.target);
-//     const username = form.find("#login-username");
-//     const pass = form.find("#login-pass");
+        if(result.user && result.pass){ 
+          location.href= "/home";
+        }
 
-//     if (username.val().trim() === "")
-//       isLoginEmailValid = setError( username, username.parent() , "Email ID is required.") ;
-//     if (pass.val().trim() === "")
-//       isLoginPassValid = setError( pass, pass.parent() , "Password is required.") ;
-//   }
-// });
+        if (!result.pass){          
+          isLoginPassValid = setError(pass, pass.parent(), "Password does not match.");
+        }
+      },
+
+      error: function(error){
+        console.log(error);
+      }
+
+    });
+  }
+  else{
+    console.log("Login Form Failed");
+
+    if (email.val().trim() === "")
+      isLoginEmailValid = setError( email, email.parent() , "Email ID is required.") ;
+    if (pass.val().trim() === "")
+      isLoginPassValid = setError( pass, pass.parent() , "Password is required.") ;
+  }
+});
 
 
 /************************************   Signup Client Side FORM VALIDATION   **************************************/
 
+  let isUserValid = false;
   let isEmailValid = false;
   let isPassValid = false;
   let isConfirmPassValid = false;
 
+
+  //Validating Username
+    $("#username").on("blur", function(e){
+      const value = $(e.target).val().trim();
+      
+      //if username is empty
+      if(value === "" || value === undefined){
+        isUserValid = setError( $(e.target), $(e.target).parent() , "Username is required.") ;
+      }
+      
+      //check for the length of the usernmae
+      else if (value.length > 20){
+        isUserValid = setError( $(e.target), $(e.target).parent() , "Username cannot contain more than 20 characters.") ;
+      }
+
+      else{
+        isUserValid = setSuccess( $(e.target).parent() );
+      }
+    });
+
   ////////////////  VALIDATE EMAIL
-    $("#signup-username").on("keyup focus", function(e){
+    $("#signup-email").on("keyup focus", function(e){
 
       const value = $(e.target).val().trim();
       const regex = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
@@ -240,8 +254,8 @@ $(document).ready(function() {
       
       //If email is valid, then check if the user already exists in the database
       else{ 
-        //To check how many events are attached to the #signup-username 
-        // var events = $._data($('#signup-username')[0], "events");
+        //To check how many events are attached to the #signup-email 
+        // var events = $._data($('#signup-email')[0], "events");
         // console.log(events);
 
         $.ajax({
@@ -249,6 +263,7 @@ $(document).ready(function() {
           url: "/register/" + value,
           
           success: function(result){
+            console.log(result);
             if(result)
               isEmailValid = setError( $(e.target), $(e.target).parent() , "Email ID already exists.") ;
             else if(!result)
@@ -282,7 +297,7 @@ $(document).ready(function() {
       }
       //if password doesnt match the given pattern - sho
       else if( !regex.test(String(value)) ){
-        isPassValid = setError(  $(e.target), $(e.target).parent() , "Your password must contain atleast one uppercase letter, one lowercase letter, one special character (!,@,#,$,%,^,&,*,(,),_,-,+,=) and a number.") ;
+        isPassValid = setError(  $(e.target), $(e.target).parent() , "Your password should be a combination of atleast one uppercase letter, one lowercase letter, one special character (!,@,#,$,%,^,&,*,(,),_,-,+,=) and a number.") ;
       }
       else{ 
         isPassValid = setSuccess( $(e.target).parent() );
@@ -354,7 +369,8 @@ $(document).ready(function() {
           type: "POST", 
           url: "/register",
           data: {
-            username: $("#signup-username").val().trim(),
+            username: $("#username").val().trim(),
+            email: $("#signup-email").val().trim(),
             pass: $("#signup-pass").val().trim(),
             confirmPass: $("#confirm-pass").val().trim()
           },
@@ -375,13 +391,16 @@ $(document).ready(function() {
         console.log("Signup Form Submission Failed");
 
         const form = $(e.target);
-        const username = form.find("#signup-username");
+        const username = form.find("#username");
+        const email = form.find("#signup-email");
         const pass = form.find("#signup-pass");
         const confirmPass = form.find("#confirm-pass");
 
         //If any of the required fields are empty, then throw the error
-        if (username.val().trim() === "")
-          isEmailValid = setError( username, username.parent() , "Email ID is required.") ;
+        if(username.val().trim() === "")
+          isUserValid = setError( username, username.parent() , "Username is required.") ;
+        if (email.val().trim() === "")
+          isEmailValid = setError( email, email.parent() , "Email ID is required.") ;
         if (pass.val().trim() === "")
           isPassValid = setError( pass, pass.parent() , "Password is required.") ;
         if (confirmPass.val().trim() === "")

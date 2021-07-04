@@ -1,4 +1,4 @@
-const user = "Tabassum Khan";
+const user = "";
 
 const userInfo = "Hi! I have always wanted to keep a journal to clear my mind but have been unable to in the past. Hope this blog helps me to continue it.";
 
