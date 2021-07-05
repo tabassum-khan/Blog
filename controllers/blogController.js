@@ -1,120 +1,121 @@
+//import files
+const userController = require("./userController");
 const Blog = require("../models/blogModel.js");
 const User = require("./user.js");
 
-//import usercontroller.js
-const userController = require("./userController");
 
 const months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
 const days = ["Sun", "Mon", "Tue", "Wed", "Thurs", "Fri", "Sat"];
 
-module.exports = function(app){
 
-    app.all("*", function(req, res, next){
-        if( userController.getUserAuthentication() )
-            next();
-        else
-            res.redirect("/");  
+//  Check if the user has been authenticated
+function checkUserAuthentication(req, res, next){
+    if( userController.getUserAuthentication() )
+        next();
+    else
+        res.redirect("/");  
+}
+
+
+//  GET HOME PAGE
+function getHome(req, res){
+    Blog.find().sort({createdAt: -1})
+    .then( (result) => {
+        res.render("home", {
+            user:User.user,
+            startingContent: User.userInfo,
+            posts: result
+        });
+    })  
+    .catch( (err) => console.log(err) );
+}
+
+
+//  GET COMPOSE PAGE
+function getCompose(req, res){
+    res.render("compose", {
+        id: "",
+        title: "",
+        content: ""
     });
+}
 
-    /***********    All GET ROUTES  *****************/
-    
-    //HOME ROUTE
-    app.get("/home", function(req, res){
-        Blog.find().sort({createdAt: -1})
-        .then( (result) => {
-            res.render("home", {
-                user:User.user,
-                startingContent: User.userInfo,
-                posts: result
+
+//Fetch the required post based on :_id from the databse ==> "read more" Link
+function fetchPost(req, res){
+    const requestedPostId = req.params.postId;
+
+    Blog.find({_id: requestedPostId}, function(err, post){
+        if(!err){
+            res.render("post", {post: post[0]});
+        }else{
+            console.log(err);
+        }
+    });
+}
+
+
+// Go to the Compose Page with the POST DATA if editing is requested ==> "Edit" Link
+function editPost(req, res){
+    const requestedPostId = req.params.postId;
+
+    Blog.find({_id: requestedPostId}, function(err, post){
+        if(!err){
+            res.render("compose", {
+                id: post[0]._id,
+                title: post[0].title,
+                content: post[0].content
             });
-        })  
-        .catch( (err) => console.log(err) );
+        }else{
+            console.log(err);
+        }
     });
+}
 
-    //COMPOSE ROUTE
-    app.get("/compose", function(req, res){
-        res.render("compose", {
-            id: "",
-            title: "",
-            content: ""
-        });
+
+//Delete the Post ==> "delete" link
+function deletePost(req, res){
+    const requestedPostId = req.params.postId;
+
+    Blog.findByIdAndDelete(requestedPostId, function(err, post){
+        if(!err){
+            console.log(post);
+            console.log("The post has been successfully deleted! ");
+            res.json({post: post});
+        }   
+        else{
+            console.log(err);
+        }
     });
+}
 
-    //Fetch the required post based on :_id from the databse
-    app.get("/posts/:postId", function(req, res){
-        const requestedPostId = req.params.postId;
 
-        Blog.find({_id: requestedPostId}, function(err, post){
-            if(!err){
-                res.render("post", {post: post[0]});
-            }else{
-                console.log(err);
-            }
-        });
-    });
+// Creates post if present in the db, else updates the edited post
+function composePost(req, res){
 
-    //Edit the items in the database based on their ids
-    app.get("/edit/:postId", function(req, res){
-        const requestedPostId = req.params.postId;
+    //get todays date
+    const today = new Date();
+    const dd = today.getDate().toString();
+    const yyyy = today.getFullYear().toString();
+    const sup = `<span class="sup">th</span> `;
 
-        Blog.find({_id: requestedPostId}, function(err, post){
-            if(!err){
-                res.render("compose", {
-                    id: post[0]._id,
-                    title: post[0].title,
-                    content: post[0].content
-                });
-            }else{
-                console.log(err);
-            }
-        });
-    });
+    //convert date into string and format pattern
+    const restOfTheDate = months[today.getMonth()] + " " + yyyy + ", " + days[today.getDay()];
 
-    //Delete from the database
-    app.get("/delete/:postId", function(req, res){
-        const requestedPostId = req.params.postId;
+    //if the data(id) already exists in the db, then update it else create it
+    const id = req.body.postId;
+    
+    if (id === "")
+        createPost(req, dd, restOfTheDate);
+    else
+        updatePost(req, id, dd, restOfTheDate);
 
-        Blog.findByIdAndDelete(requestedPostId, function(err, post){
-            if(!err){
-                console.log(post);
-                console.log("The post has been successfully deleted! ");
-                res.json({post: post});
-            }   
-            else{
-                console.log(err);
-            }
-        });
-    });
-
-    /***********    All POST ROUTES  *****************/
-
-    //CREATE POSTS IN DATABSE
-    app.post("/compose", function(req, res){
-
-        //get todays date
-        const today = new Date();
-        const dd = today.getDate().toString();
-        const yyyy = today.getFullYear().toString();
-        const sup = `<span class="sup">th</span> `;
-
-        //convert date into string and format pattern
-        const restOfTheDate = months[today.getMonth()] + " " + yyyy + ", " + days[today.getDay()];
-
-        //if the data(id) already exists in the db, then update it else create it
-        const id = req.body.postId;
-        
-        if (id === "")
-            createPost(req, dd, restOfTheDate);
-        else
-            updatePost(req, id, dd, restOfTheDate);
-
-        res.redirect("/home");
-
-    });
+    res.redirect("/home");
 
 }
 
 
+//Creates POSTS
 function createPost(req, dd, restOfTheDate){
     const newBlog = new Blog({
         title: req.body.postTitle,
@@ -132,6 +133,8 @@ function createPost(req, dd, restOfTheDate){
     });
 }
 
+
+// Updates Post if already present
 function updatePost(req, id, dd, restOfTheDate){
     const update = {
         $set: {
@@ -152,6 +155,17 @@ function updatePost(req, id, dd, restOfTheDate){
             console.log(err);
         }
     });
+}
+
+
+module.exports = {
+    checkUserAuthentication,
+    getHome, 
+    getCompose, 
+    fetchPost,
+    editPost,
+    composePost,
+    deletePost
 }
 
 

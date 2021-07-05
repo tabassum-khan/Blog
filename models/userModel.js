@@ -27,6 +27,8 @@ const userSchema = new Schema({
         // minlength: [8, "Password is less than 8 characters"], 
         // maxlength: [16, "Password is greater than 16 characters"]
     }
+
+    // add blog array of blogSchema
 });
 
 const User = mongoose.model("user", userSchema);

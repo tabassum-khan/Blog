@@ -148,6 +148,8 @@ $("#login-email").on("keyup blur", function(e){
 
 });
 
+
+// Validate login password
 $("#login-pass").on("keyup", function(e){
   const value = $(e.target).val().trim();
 
@@ -161,6 +163,8 @@ $("#login-pass").on("keyup", function(e){
 
 });
 
+
+//On submitting the login form => match the pass with the user
 $("#login-form").submit(function(e){
 
   e.preventDefault();

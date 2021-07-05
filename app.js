@@ -4,22 +4,23 @@ const express = require("express");
 const mongoose = require('mongoose');
 
 //import files
-const blogController = require("./controllers/blogController.js");
-const userController = require("./controllers/userController.js");
+const authRoutes = require("./routes/authRoutes.js");
+const blogRoutes = require("./routes/blogRoutes.js");
 
 //instantiate the app
 const app = express();
 
+
+// MIDDLEWARE
 app
-.set('view engine', 'ejs') //set the path to ejs files
-.use(express.static("public")) //static files - css and js and bodyparser for parsing req.body
-.use(express.urlencoded({ extended: false })) // to parse the req.body
-.use(userController.router); // User Controller --> demonstrating through express.router()
+  .set('view engine', 'ejs') //set the path to ejs files
+  .use(express.static("public")) //static files - css and js and bodyparser for parsing req.body
+  .use(express.urlencoded({ extended: false })) // to parse the req.body
+  .use(authRoutes) // All the authentication routes
+  .use(blogRoutes); // All the blog routes
 
-//call the controller - controls the get post request
-blogController(app);
 
-/***    URL to your database    ***/
+/***    CONNECT TO THE DATABSE    ***/
 dbURI = "mongodb://localhost:27017/testDB";
     
 mongoose.connect(dbURI, { useNewUrlParser: true , useUnifiedTopology: true})
