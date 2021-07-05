@@ -184,6 +184,7 @@ $("#login-form").submit(function(e){
       url: "/login",
 
       success: function(result){
+        console.log(result)
 
         if(!result.user)
           isLoginEMailValid = setError(email, email.parent(), "User does not exist.");
