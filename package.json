@@ -18,6 +18,7 @@
     "md5": "^2.3.0",
     "mongo": "^0.1.0",
     "mongoose": "^5.12.14",
-    "mongoose-validator": "^2.1.0"
+    "mongoose-validator": "^2.1.0",
+    "validator": "^13.6.0"
   }
 }

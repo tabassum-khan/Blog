@@ -1,0 +1,40 @@
+* {
+    box-sizing: border-box;
+  }
+  
+  body {
+    margin: 0;
+    padding: 0;
+    font-family: sans-serif;
+  }
+
+  .form-group{
+      position: relative;
+  }
+
+  .form-group.error .form-control{
+    border-color: #e74e3c;
+  }  
+
+.fa-exclamation-circle{
+    position: absolute;
+    top: 35px;
+    right: 5px; 
+    display: none;
+  }
+  
+  .form-group.error i.fa-exclamation-circle{
+    display: inline-block;
+    color: #e74e3c;
+  }
+
+  .error-message{
+    position: relative;
+    display: none;
+  }
+  
+  .form-group.error .error-message{
+    display: inline-block;
+    color: #e74e3c;
+  }
+  

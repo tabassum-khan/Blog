@@ -1,14 +1,27 @@
 
 <%- include("partials/header"); -%>
+
+  <!--  Adding blog script  -->
+    <script src = "js/compose.js"></script>
+
     <h1>Compose</h1>
-    <form class="" action="/compose" method="post">
+    <form id="blogForm" novalidate>
+      <input type="hidden"  id="postID" name="postId" value="<%=id%>">
+
       <div class="form-group">
-        <input type="hidden" name="postId" value="<%=id%>">
         <label>Title</label>
-        <input class="form-control" type="text" name="postTitle" value="<%=title%>">
-        <label>Post</label>
-        <textarea class="form-control" name="postBody" rows="5" cols="30"><%=content%></textarea>
+        <input class="form-control" id="postTitle" type="text" name="postTitle" value="<%=title%>" required>
+        <i class="fas fa-exclamation-circle"></i>
+        <small class="error-message" aria-live="polite">Erorr Message</small>
       </div>
+
+      <div class="form-group">
+        <label>Post</label>
+        <textarea class="form-control" id="postBody" name="postBody" rows="5" cols="30" required><%=content%></textarea>
+        <i class="fas fa-exclamation-circle"></i>
+        <small class="error-message" aria-live="polite">Error Message</small>
+      </div>
+
       <button class="btn btn-primary" type="submit" name="button">Publish</button>
     </form>
 

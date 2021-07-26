@@ -36,7 +36,7 @@ function getCompose(req, res){
     res.render("compose", {
         id: "",
         title: "",
-        content: ""
+        content: "", 
     });
 }
 
@@ -64,7 +64,7 @@ function editPost(req, res){
             res.render("compose", {
                 id: post[0]._id,
                 title: post[0].title,
-                content: post[0].content
+                content: post[0].content,
             });
         }else{
             console.log(err);
@@ -97,26 +97,24 @@ function composePost(req, res){
     const today = new Date();
     const dd = today.getDate().toString();
     const yyyy = today.getFullYear().toString();
-    const sup = `<span class="sup">th</span> `;
 
     //convert date into string and format pattern
     const restOfTheDate = months[today.getMonth()] + " " + yyyy + ", " + days[today.getDay()];
 
     //if the data(id) already exists in the db, then update it else create it
     const id = req.body.postId;
+    console.log(id);
     
-    if (id === "")
-        createPost(req, dd, restOfTheDate);
+    if (id === "" || id === undefined)
+        createPost(req, dd, restOfTheDate, res);
     else
-        updatePost(req, id, dd, restOfTheDate);
-
-    res.redirect("/home");
+        updatePost(req, id, dd, restOfTheDate, res);
 
 }
 
 
 //Creates POSTS
-function createPost(req, dd, restOfTheDate){
+function createPost(req, dd, restOfTheDate, res){
     const newBlog = new Blog({
         title: req.body.postTitle,
         content: req.body.postBody,
@@ -127,15 +125,19 @@ function createPost(req, dd, restOfTheDate){
     //save the new blog into the database
     newBlog.save()
     .then((result) => {
-        console.log(result + "has been saved to the database")
-    }).catch((err) => {
-        console.log(err)
+        console.log(result + "has been saved to the database");
+        res.json({errors: ""});        
+    })
+    .catch((err) => {
+        //handle errors
+        const errors = handleErrors(err);
+        res.json( { errors } );
     });
 }
 
 
 // Updates Post if already present
-function updatePost(req, id, dd, restOfTheDate){
+function updatePost(req, id, dd, restOfTheDate, res){
     const update = {
         $set: {
             title: req.body.postTitle,
@@ -151,12 +153,27 @@ function updatePost(req, id, dd, restOfTheDate){
                 console.log("Post does not exist! Please create it../");
             else
                 console.log("Data updated successfully!");
+                res.redirect("/home");
         }else{
             console.log(err);
         }
     });
 }
 
+
+function handleErrors(err){
+    const errors = {
+        title: "",
+        content: ""
+    }
+
+    if(err.name === "ValidationError"){
+        Object.values(err.errors).forEach( ({properties}) => {
+            errors[ properties.path ] = properties.message;
+        });
+    }
+    return errors;
+}
 
 module.exports = {
     checkUserAuthentication,

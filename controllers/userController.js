@@ -27,12 +27,12 @@ let checkUserExists = function(req, res){
     User.find({email: email}, function(err, result){
         if(!err){
             if(result.length === 0)
-                res.send(false);
+               res.send(false);
             else
                 res.send(true);
         }
         else
-            res.send(err);
+           console.log(err); //not handling errors
     });
 }
 
@@ -62,7 +62,7 @@ function authenticateLogin(req, res){
             }
 
         } else{
-           console.log(err);
+           console.log(err);//not handling errors
         }
     });
 }
@@ -88,11 +88,32 @@ function registerUser(req, res){
                 res.send(`Congratulations ${username}, you have been successfully registered with the email: ${email}`);
             })
             .catch( (err) =>{
-                console.log(err);
+                const errors = handleErrors(err);
+                res.json({ errors });
+                // console.log(errors);
+                // res.send(`Unable to create the user`);
             });
         }
     });
 }
+
+
+//Handle signup errors
+function handleErrors(err){
+    const errors = {
+        username: "",
+        email: "", 
+        password: ""
+    };
+
+    if(err.name === "ValidationError"){
+        Object.values(err.errors).forEach( ({properties}) => {
+            errors[ properties.path ] = properties.message;
+        });
+    }
+    return errors;
+}
+
 
 function getUserAuthentication(){
     if(isUserAuthenticated)
@@ -100,6 +121,7 @@ function getUserAuthentication(){
     else   
         return false;
 }
+
 
 module.exports = {
     login,
